@@ -1,7 +1,7 @@
 # Forma
 All-in-one desktop file converter — video, audio, images, PDF, YouTube &amp; Spotify downloads. Electron + React frontend, Python backend.
 
-![Forma](assets/icon.png)
+![Forma](assets/icon.png)<img src="image.png" width="300">
 
 ## Download & Installation (End Users)
 
