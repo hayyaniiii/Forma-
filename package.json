@@ -1,0 +1,106 @@
+{
+  "name": "forma",
+  "version": "0.1.0",
+  "description": "Forma — universal file converter desktop app",
+  "author": "Forma",
+  "main": "electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k \"npm run dev:vite\" \"npm run dev:backend\" \"npm run dev:electron\"",
+    "dev:vite": "vite",
+    "dev:backend": "py -m pip install -q -r backend/requirements.txt && py backend/server.py",
+    "dev:electron": "wait-on http://127.0.0.1:5173 http://127.0.0.1:5123/api/health && cross-env VITE_DEV=1 electron .",
+    "build": "vite build",
+    "icon": "py scripts/generate_icon.py",
+    "start": "npm run build && electron .",
+    "backend": "py -m pip install -q -r backend/requirements.txt && py backend/server.py",
+    "build:backend": "py -m PyInstaller --onefile --noconsole --distpath dist-backend --workpath build-backend backend/server.py",
+    "pack": "npm run build:backend && vite build && electron-builder",
+    "pack:win": "npm run build:backend && vite build && electron-builder --win",
+    "pack:mac": "npm run build:backend && vite build && electron-builder --mac",
+    "pack:linux": "npm run build:backend && vite build && electron-builder --linux"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tabler/icons-react": "^3.44.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "vite": "^6.0.3",
+    "wait-on": "^8.0.1"
+  },
+  "build": {
+    "appId": "com.forma.converter",
+    "productName": "Forma",
+    "copyright": "Copyright © 2026 Forma",
+    "directories": {
+      "output": "release",
+      "buildResources": "assets"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "assets/**/*",
+      "!backend/**/__pycache__/**"
+    ],
+    "extraResources": [
+      {
+        "from": "dist-backend",
+        "to": "backend",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "bin",
+        "to": "bin",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Forma"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "assets/icon.png",
+      "category": "public.app-category.utilities"
+    },
+    "dmg": {
+      "title": "Forma",
+      "icon": "assets/icon.png"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "assets/icon.png",
+      "category": "Utility"
+    }
+  }
+}
